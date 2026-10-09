@@ -21,11 +21,11 @@ FROM exchange_rates
 WHERE currency = 'USD'
 ORDER BY rate_date;
 
--- 4. Most volatile currencies (relative range)
+-- 4. Most volatile currencies (relative range, excluding very small rates)
 SELECT currency,
        ROUND((MAX(rate_per_unit) - MIN(rate_per_unit)) / AVG(rate_per_unit) * 100, 2) AS range_pct
 FROM exchange_rates
 GROUP BY currency
-HAVING COUNT(*) > 1
+HAVING COUNT(*) > 1 AND AVG(rate_per_unit) >= 1
 ORDER BY range_pct DESC
 LIMIT 10;
